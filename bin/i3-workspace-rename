@@ -31,7 +31,7 @@ def rename():
     workspaces = json.loads(workspaces_json.decode())
     workspace = next(x for x in workspaces if x['focused'])
 
-    Popen(['i3-msg', 'rename workspace "%s" to %d:%s' % (workspace['name'], workspace['num'], name)], stdout=PIPE)
+    Popen(['i3-msg', 'rename workspace "%s" to "%s"' % (workspace['name'], name)], stdout=PIPE)
 
 
 if __name__ == '__main__':
