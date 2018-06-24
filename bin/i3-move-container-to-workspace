@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import json
+
+from subprocess import Popen, PIPE
+
+
+def switch():
+    p = Popen(['i3-msg', '-t', 'get_workspaces'], stdout=PIPE)
+    workspaces_json , _ = p.communicate()
+    workspaces = json.loads(workspaces_json.decode())
+
+    focused_workspace = next(x for x in workspaces if x['focused'])
+    workspace_names = [x['name'] for x in workspaces]
+
+    p = Popen(['rofi', '-dmenu', '-P', 'Move to workspace: '] , stdin=PIPE, stdout=PIPE)
+    stdin = '\n'.join(workspace_names)
+    workspace, err = p.communicate(stdin.encode())
+
+    workspace = workspace.strip()
+
+    if workspace and workspace != focused_workspace['name']:
+        Popen(['i3-msg', 'move', 'container', 'to', 'workspace', workspace.strip()], stdout=PIPE)
+
+
+if __name__ == '__main__':
+    switch()
